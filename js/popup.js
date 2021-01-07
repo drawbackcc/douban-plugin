@@ -30,7 +30,7 @@ $(function () {
                  //更新popup页面
                 $("table").append('<tr><td class="word">' + word + '</td><td><button class="remove" data-word="' + word + '">移除</button></td></tr>')
 
-                $("#msg").append('<p>收到回复：' + response + '</p>')
+                $("#msg").append('<p>添加屏蔽词' + word + '</p>' + '<p>收到回复：' + response + '</p>')
                 // 更新屏蔽词
                 // var words = []
                 // $("table td.word").each(function (index) {
@@ -51,7 +51,7 @@ $(function () {
         // $("#msg").append('<p>移除</p>')
         var word = $(this).data('word')
         // var word = $(this).text()
-        $("#msg").append('<p>移除关键词:' + $(this).data('word') + '</p>')
+        $("#msg").append('<p>移除屏蔽词:' + $(this).data('word') + '</p>')
         // $("#msg").append('<p>移除关键词:' + $(this).attr('data-word') + '</p>')
         //  向content-script发送屏蔽词
         $(this).closest('tr').remove()

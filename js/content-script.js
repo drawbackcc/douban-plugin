@@ -31,12 +31,16 @@ function handle(data) {
             // if (data.type == 'remove'){ $(this).css('background', '#f5f5f5'); console.log("grey:" + data.word)}
             if (data.type == 'add') {
                 // $(this).css('background', 'red')
-                $(this).hide()
+                // $(this).hide()
+                $(this).fadeOut();
+                console.log("hide--" + title)
                 // console.log("red:" + data.word)
             } else {
                 // $(this).css('background', '#f5f5f5')
                 // console.log("grey:" + data.word)
-                $(this).show()
+                // $(this).show()
+                $(this).fadeIn();
+                console.log("show++" + title)
             }
 
             // $(this).hide()
@@ -45,6 +49,40 @@ function handle(data) {
     })
 }
 
+/**
+ * 
+ * @param {type:'', words: []} data 
+ */
+function handleByBatch(data) {
+    // console.log('handle:' + data.word + data.type)
+    if(data.type == 'add'){
+        $('table.olt tr:not(.th)').each(function (index) {
+            var title = $(this).children('.title').children('a').attr('title')  
+            var el = $(this);
+            $(data.words).each(function(i){
+                if (title.indexOf(data.words[i]) >= 0) {             
+                    $(el).hide()
+                    console.log("hide--" + title)
+                }
+            })
+        })
+    }else{
+        $('table.olt tr:not(.th)').each(function (index) {
+            var title = $(this).children('.title').children('a').attr('title')  
+            var el = $(this);
+            $(data.words).each(function(i){
+                if (title.indexOf(data.words[i]) >= 0) {             
+                    $(el).show()
+                    console.log("show--" + title)
+                }
+            })
+        })
+    }
+}
+
+/**
+ *  @param {type:'', word: ''} data 
+ */
 function updateWords(data) {
     console.log('updateWords:' + data.word + data.type)
     chrome.storage.sync.get({words: []}, function (items) {
@@ -75,26 +113,15 @@ $(function () {
         words: []
     }, function (items) {
         console.log('start:' + items.words)
-        $(items.words).each(function (index) {
-            // hide(this)
-            handle({word : this, type : 'add'})
-        })
+        // $(items.words).each(function (index) {
+        //     // hide(this)
+        //     handle({word : this, type : 'add'})
+        // })
+        handleByBatch({type: 'add', words: items.words})
     });
 
     chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         console.log(sender.tab ? "from a content script:" + sender.tab.url : "from the extension");
-        // var word = request.word
-        // if (request.type == 'add') {
-        //     hide(word)
-        //     sendResponse('好了我把【' + word + '】藏起来了');
-        // }else if(request.type == 'remove'){
-        //     show()
-        //     sendResponse('好了我把【' + word + '】恢复了');
-        // }else {
-        //     sendResponse('不懂你在说什么');
-        // }
-        // console.log('word:' + request.word)
-        // console.log('type' + request.type)
         handle(request)
         sendResponse('done~')
         updateWords(request)
